@@ -11,9 +11,13 @@
 </head>
 <body>
   <header role="banner">
-    <h1>My Bookmarks</h1>
+    <h1>
+      My Bookmarks
+    </h1>
     <form id="bookmark-options">
-      <button type="button" name="add-bookmark" class="add-bookmark">ADD BOOKMARK</button>
+      <button type="button" name="add-bookmark" class="add-bookmark">
+        ADD BOOKMARK
+      </button>
       <select id="filter-bookmark" name="filter-bookmark" class="filter-bookmark" placeholder="Minimum Rating">
         <option value=0 class="valx">no filter</option>
         <option value=5 class="val5">5 stars</option>
@@ -26,29 +30,9 @@
     </form>
   </header>
   <main role=main>
-    <section class="add-bookmark">
-      <h2>Create a Bookmark</h2>
-      <form id="create-bookmark">
-        <fieldset>
-        <div>
-          <label for="bookmark-title">Title:</label>   
-          <input type="text" name="bookmark-title" class="bookmark-title" placeholder=">e.g. Cat Videos...">
-        </div>
-        <div>
-          <label for="bookmark-url">URL:</label>         
-          <input type="text" name="bookmark-url" class="bookmark-url" placeholder=">Enter webpage URL"> 
-        </div>
-        <div>
-          <label for="bookmark-desc">Description:</label>         
-          <input type="textarea" name="bookmark-desc" class="bookmark-desc" placeholder=">Enter description.">
-          <span class="minRating"></span>
-        </div>
-      </fieldset>
-        <div>  
-          <button type="submit" class="add-bookmark">ADD</button>
-          <button type="button" class="cancel-bookmark">CANCEL</button>  
-        </div>
-      </form>      
+    <section id="bm-details">
+    </section>
+    <section id="add-bm">     
     </section>
     <ul class="bookmark-list">
     </ul>    

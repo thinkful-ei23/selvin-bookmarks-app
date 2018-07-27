@@ -59,12 +59,24 @@ span.wheart, span.bheart {
 .wheart:after {left:0;-webkit-transform:rotate(45deg);-moz-transform:rotate(45deg); -ms-transform:rotate(45deg); -o-transform:rotate(45deg);transform:rotate(45deg);-webkit-transform-origin:100% 100%;-moz-transform-origin:100% 100%;-ms-transform-origin:100% 100%;-o-transform-origin:100% 100%;transform-origin :100% 100%;}
 
 .add-bookmark {
-  font-size:0.65rem;
-margin-left:60%;
+  font-size:0.85rem;
+  margin-left:10px;
   
   }
 
 .rate-bookmark {
-  font-size: 0.65rem;
+  font-size: 0.85rem;
  }
+
+.add-bookmark {
+  margin:10px 0 0 30px;
+}
+
+.hidden {
+  display:none;
+}
+.show-detail {
+  height:200px;
+  margin:10px 0 0 30px;
+  border: 1px solid black;
 }

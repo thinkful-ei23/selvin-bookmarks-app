@@ -10,7 +10,7 @@ const bookmarkList = ( function(){
     const bookmarkRating = getBookmarkRating(rating);
     //console.log(`bookmarkRating: ${bookmarkRating}`);
     return `
-      <li class="bookmark-entry">
+      <li class="bookmark-entry"  data-item-id="${bookmark.id}">
         <div class="bookmark-item">
           <p class="bookmark-title">${bookmark.title}</p>
           <p class="bookmark-rating-class">${bookmarkRating}</p>
@@ -89,16 +89,6 @@ const bookmarkList = ( function(){
     return bookmarks.join('');
   }
 
- 
-   //handle bookmark item being clicked on list
-   function handleAddBookmarkClicked() {
-
-     $('#bookmark-options').on('click', '.add-bookmark', event => {
-       console.log('handleAddBookmarkClicked ran');
-       render();
-     });
-  }
-  
   function handleRatingClicked() {
      $('#bookmark-options').on('click', '.rate-bookmark', event => {
       console.log('handleRating ran');
@@ -107,7 +97,25 @@ const bookmarkList = ( function(){
        render();
      });
    }
+   
+   function handleAddBookmarkClicked() {
+    $('.add-bookmark').on('click', event => {
+     console.log('handleAddBookmarkClicked ran')  
+     store.adding = true;
+     render();
+    });
+  }
 
+  
+  function handleCancelBookmarkClicked() {
+
+    $('.add-bookmark').on('click', '.cancel-bookmark', event => {
+      console.log('handleCancelBookmarkClicked ran');
+      store.adding = false;
+      render();
+    });
+ }
+ 
   // this is fired once the "ADD" button is clicked from create panel
   function handleNewBookmarkSubmit() {
 
@@ -126,6 +134,7 @@ const bookmarkList = ( function(){
       $('.bookmark-url').val('');
       $('.bookmark-desc').val('');
       $('.bookmark-rating').val('');
+      $('#create-bookmark').addClass('hidden');
       api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDesc, newBookmarkRating, (newBookmark) => {
         store.addBookmark(newBookmark);
         render();
@@ -133,18 +142,17 @@ const bookmarkList = ( function(){
       render();
     });
   }
-
-  function getbookmarkIdFromElement(bookmark) {
-    return $(bookmark)
-      .closest('.bookmark-element')
-      .data('bookmark-id');
-  }
  
   function handleBookmarkClicked() {
-    $('.bookmark-list').on('click', '.add-bookmark', event => {
-      const id = getbookmarkIdFromElement(event.currentTarget);
-      store.findAndToggleChecked(id);
-      render();
+    $('.bookmark-list').on('click', '.bookmark-entry', event => {
+        const bmID = $(event.currentTarget).data('item-id');
+        //const bmTitle = $(event.currentTarget).val();
+        $('#bm-details').removeClass('hidden');
+        //$('#bm-details h2').val($(event.currentTarget))
+        console.log($(event.currentTarget));
+        console.log(bmID);
+        //console.log(bmTitle);
+      //const id = getbookmarkIdFromElement(event.currentTarget);
     });
   }
 
@@ -180,9 +188,66 @@ const bookmarkList = ( function(){
     if (store.minimum !== 0) {
       bookmarks.filter(bookmark => bookmark.rating >= store.minimum);
     }
-    console.log(`bookmarks: ${bookmarks}`);
+    //console.log(`bookmarks: ${bookmarks}`);
 
     const bookmarkListString = generateBookmarkString(bookmarks);
+
+    if (store.expanded === true) {
+      const bookmarkExpandedString = `
+      <div  class="show-detail">
+        <header>
+          <h2 class="title"></h2>
+        </header>
+        <p class="bookmark-detail"></p>
+        <div class="detail-buttons">
+          <button class="visit">Visit Site</button>
+          <button class="remove">Remove</button>
+        <div class="rating">
+        </div>
+      </div>`;
+      $('#bm-details').html(bookmarkExpandedString);
+    }
+  
+    if (store.adding === true) {
+      const bookmarkAddingString = `
+      <div>
+        <form id="create-bookmark">
+          <header>
+            <h2>Create a Bookmark</h2>
+          </header>  
+          <fieldset>
+            <div>
+              <label for="bookmark-title">Title:</label>   
+              <input type="text" name="bookmark-title" class="bookmark-title" placeholder=">e.g. Cat Videos...">
+            </div>
+            <div>
+              <label for="bookmark-url">URL:</label>         
+              <input type="text" name="bookmark-url" class="bookmark-url" placeholder=">Enter webpage URL"> 
+            </div>
+            <div>
+              <label for="bookmark-desc">Description:</label>         
+              <input type="textarea" name="bookmark-desc" class="bookmark-desc" placeholder=">Enter description.">
+              <label for="bookmark-rating">Rating</label> 
+              <select id="bookmark-rating" name="bookmark-rating" class="bookmark-rating">
+                <option value=0 class="valx">no filter</option>
+                <option value=5 class="val5">5 stars</option>
+                <option value=4 class="val4">4 stars</option>
+                <option value=3 class="val3">3 stars</option>
+                <option value=2 class="val2">2 stars</option>
+                <option value=1 class="val1">1 star</option>
+                <option value=0 class="val3">0 stars</option>
+              </select>
+            </div>
+            <div>  
+              <button type="submit" class="add-bookmark">ADD</button>
+              <button type="reset" class="cancel-bookmark">CANCEL</button>  
+            </div>
+          </fieldset>
+        </form> 
+      </div>`;
+
+      $('#add-bm').html(bookmarkAddingString);
+    }
 
     //insert the HTML into the DOM
     $('.bookmark-list').html(bookmarkListString);
@@ -192,8 +257,10 @@ const bookmarkList = ( function(){
     handleAddBookmarkClicked();
     handleNewBookmarkSubmit();
     handleRatingClicked();
-    handleBookmarkTitleClicked();
+    //handleBookmarkTitleClicked();
     handleDeleteBookmarkClicked();
+    handleCancelBookmarkClicked();
+    handleBookmarkClicked();
 
    // handleEditBookmarkSubmit();
   }
