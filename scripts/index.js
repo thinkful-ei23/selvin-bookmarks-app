@@ -3,7 +3,6 @@
 
 $(document).ready(function() {
     bookmarkList.bindEventListeners();
-    bookmarkList.loadFilter();
     bookmarkList.render();
     api.getBookmarks((bookmarks) => {
         bookmarks.forEach((bookmark) => store.addBookmark(bookmark));

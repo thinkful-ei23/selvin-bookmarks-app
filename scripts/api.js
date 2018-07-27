@@ -9,15 +9,15 @@ const api = (function() {
     $.getJSON(`${BASE_URL}`, callback);
   };
 
-  const createBookmark = function(id,title, url, desc, rating, callback) {
+  const createBookmark = function(title, url, desc, rating, callback) {
     const newBookmark = {
-        id: id,
         title: title,
         url: url,
         desc: desc,
         rating: rating
     };
     const strJSON = JSON.stringify(newBookmark);
+    console.log(`strJSON: ${strJSON}`);
     // With ajax()
     $.ajax({
       url: `${BASE_URL}`,

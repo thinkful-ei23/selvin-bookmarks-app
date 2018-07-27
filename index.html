@@ -13,8 +13,15 @@
   <header role="banner">
     <h1>My Bookmarks</h1>
     <form id="bookmark-options">
-      <button type="button" class="add-bookmark">ADD BOOKMARK</button>
-      <select name="rate-bookmark" class="filter-bookmark" placeholder="Minimum Rating">
+      <button type="button" name="add-bookmark" class="add-bookmark">ADD BOOKMARK</button>
+      <select id="filter-bookmark" name="filter-bookmark" class="filter-bookmark" placeholder="Minimum Rating">
+        <option value=0 class="valx">no filter</option>
+        <option value=5 class="val5">5 stars</option>
+        <option value=4 class="val4">4 stars</option>
+        <option value=3 class="val3">3 stars</option>
+        <option value=2 class="val2">2 stars</option>
+        <option value=1 class="val1">1 star</option>
+        <option value=0 class="val3">0 stars</option>
       </select>
     </form>
   </header>
@@ -22,6 +29,7 @@
     <section class="add-bookmark">
       <h2>Create a Bookmark</h2>
       <form id="create-bookmark">
+        <fieldset>
         <div>
           <label for="bookmark-title">Title:</label>   
           <input type="text" name="bookmark-title" class="bookmark-title" placeholder=">e.g. Cat Videos...">
@@ -34,7 +42,10 @@
           <label for="bookmark-desc">Description:</label>         
           <input type="textarea" name="bookmark-desc" class="bookmark-desc" placeholder=">Enter description.">
           <span class="minRating"></span>
-          <button type="button" class="add-bookmark">ADD</button>
+        </div>
+      </fieldset>
+        <div>  
+          <button type="submit" class="add-bookmark">ADD</button>
           <button type="button" class="cancel-bookmark">CANCEL</button>  
         </div>
       </form>      

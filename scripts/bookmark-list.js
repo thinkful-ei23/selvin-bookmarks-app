@@ -5,9 +5,10 @@ const bookmarkList = ( function(){
 
   function formatBookmark(bookmark) {
     console.log('formatBookmark ran');
+   // console.log(`bookmark: ${bookmark}`);
     const rating = bookmark.rating;
     const bookmarkRating = getBookmarkRating(rating);
-  
+    //console.log(`bookmarkRating: ${bookmarkRating}`);
     return `
       <li class="bookmark-entry">
         <div class="bookmark-item">
@@ -18,6 +19,9 @@ const bookmarkList = ( function(){
   }
   
   function getBookmarkRating(rating){
+    // returns 5 hearts combo of black/white
+   // console.log(`getBookmarkRating ran`);
+   // console.log(`rating: ${rating}`);
     let bookmarkRating = '';
     switch(rating) {
       case 0:
@@ -76,22 +80,8 @@ const bookmarkList = ( function(){
         <span class="wheart"></span>
         <span class="wheart"></span>`;
     }
+    //console.log(`prior to return - bookmarkRating: ${bookmarkRating}`);
     return bookmarkRating;
-  }
-
-  function loadFilter() {
-    $('.filter-bookmark').html(getFilterOptions);
-  } 
-  
-  function getFilterOptions(){
-    return `
-    <option value="5" class="val5">${getBookmarkRating(5)}</option>
-    <option value="4" class="val4">${getBookmarkRating(4)}</option>
-    <option value="3" class="val3">${getBookmarkRating(3)}</option>
-    <option value="2" class="val3">${getBookmarkRating(2)}</option>
-    <option value="1" class="val3">${getBookmarkRating(1)}</option>
-    <option value="0" class="val3">${getBookmarkRating(0)}</option>`;
-
   }
 
   function generateBookmarkString(bookmarkList) {
@@ -120,12 +110,23 @@ const bookmarkList = ( function(){
 
   // this is fired once the "ADD" button is clicked from create panel
   function handleNewBookmarkSubmit() {
-    console.log('handleNewBookmarkSubmit');
-    $('#bookmark-form').submit(function (event) {
+
+    $('#create-bookmark').submit(function (event) {
       event.preventDefault();
-      const newBookmarkTitle = $('.createTitle').val();
-      $('.createTitle').val('');
-      api.createBookmark(newBookmarkTitle, (newBookmark) => {
+      console.log('handleNewBookmarkSubmit');
+      const newBookmarkTitle = $('.bookmark-title').val();
+      const newBookmarkURL = $('.bookmark-url').val();
+      const newBookmarkDesc = $('.bookmark-desc').val();
+      const newBookmarkRating = $('.bookmark-rating').val();
+     // console.log(`newBookmarkTitle: ${newBookmarkTitle}`);
+     // console.log(`newBookmarkURL: ${newBookmarkURL}`);
+     //console.log(`newBookmarkDesc: ${newBookmarkDesc}`);
+      //console.log(`newBookmarkRating: ${newBookmarkRating}`);
+      $('.bookmark-title').val('');
+      $('.bookmark-url').val('');
+      $('.bookmark-desc').val('');
+      $('.bookmark-rating').val('');
+      api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDesc, newBookmarkRating, (newBookmark) => {
         store.addBookmark(newBookmark);
         render();
       });
@@ -155,6 +156,10 @@ const bookmarkList = ( function(){
     });
   }
 
+  function editBookmarkTitle(title) {
+    console.log(`editBookmarkTitle ran`);
+  }
+
   function handleDeleteBookmarkClicked() {
     $('.bookmark-list').on('click', '.bookmark-delete', event => {
       // get the index of the bookmark in store.bookmarks
@@ -168,8 +173,8 @@ const bookmarkList = ( function(){
 
   function render() {
     console.log('`render` ran');
-    console.log(`store.bookmarks: ${store.bookmarks}`);
-    console.log(`store.minimum: ${store.minimum}`);
+    //console.log(`store.bookmarks: ${store.bookmarks}`);
+    //console.log(`store.minimum: ${store.minimum}`);
     // Filter bookmark list if store prop `rating > 0` 
     let bookmarks = store.bookmarks;
     if (store.minimum !== 0) {
@@ -183,7 +188,6 @@ const bookmarkList = ( function(){
     $('.bookmark-list').html(bookmarkListString);
    }
 
-  
   function bindEventListeners() {
     handleAddBookmarkClicked();
     handleNewBookmarkSubmit();
@@ -198,6 +202,5 @@ const bookmarkList = ( function(){
   return {
     render: render,
     bindEventListeners: bindEventListeners,
-    loadFilter: loadFilter,
   };
 }());
