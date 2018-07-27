@@ -5,34 +5,21 @@ const bookmarkList = ( function(){
 
   function formatBookmark(bookmark) {
       console.log('formatBookmark ran');
-      // return `
-      //   <li class="bookmark-entry">
-      //     <div class="bookmark-item">
-      //       <p class="bookmark-title"></p>
-      //       <p class="${bookmark.rating}"><img src="${bookmark.rating}.png" alt="${rating}"></p>
-      //     </div>
-      //   </li>`
+      return `
+        <li class="bookmark-entry">
+          <div class="bookmark-item">
+            <p class="bookmark-title">${bookmark.title}</p>
+            <p class="${bookmark.minimum}"><img src="${bookmark.minimum}.png" alt=""></p>
+          </div>
+        </li>`
   }
 
-  function buildBookmarkString(bookmarkList) {
+  function generateBookmarkString(bookmarkList) {
     const bookmarks = bookmarkList.map((bookmark) => formatBookmark(bookmark));
     return bookmarks.join('');
   }
 
-  function render() {
-    console.log('`render` ran');
-
-    // Filter bookmark list if store prop `rating > 0` 
-    if (store.minimum !== 0) {
-      bookmarks = store.bookmarks.filter(bookmark => bookmark.rating >= store.minimum);
-    }
-
-    const bookmarkListString = buildBookmarkString(bookmarks);
-
-    //insert the HTML into the DOM
-    $('.bookmark-list').html(bookmarkListString);
-   }
-
+ 
    //handle bookmark item being clicked on list
    function handleAddBookmarkClicked() {
 
@@ -58,7 +45,7 @@ const bookmarkList = ( function(){
       event.preventDefault();
       const newBookmarkTitle = $('.createTitle').val();
       $('.createTitle').val('');
-      api.createBookbookmark(newBookmarkTitle, (newBookmark) => {
+      api.createBookmark(newBookmarkTitle, (newBookmark) => {
         store.addBookmark(newBookmark);
         render();
       });
@@ -99,7 +86,23 @@ const bookmarkList = ( function(){
     });
   }
 
-  
+  function render() {
+    console.log('`render` ran');
+    console.log(`store.bookmarks: ${store.bookmarks}`);
+    console.log(`store.minimum: ${store.minimum}`);
+    // Filter bookmark list if store prop `rating > 0` 
+    let bookmarks = store.bookmarks;
+    if (store.minimum !== 0) {
+      bookmarks.filter(bookmark => bookmark.rating >= store.minimum);
+    }
+    console.log(`bookmarks: ${bookmarks}`);
+
+    const bookmarkListString = generateBookmarkString(bookmarks);
+
+    //insert the HTML into the DOM
+    $('.bookmark-list').html(bookmarkListString);
+   }
+
   
   function bindEventListeners() {
     handleAddBookmarkClicked();

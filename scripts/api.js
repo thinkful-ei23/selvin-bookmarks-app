@@ -2,9 +2,16 @@
 /* global $*/
 
 const api = (function() {
-  const BASE_URL = 'https://thinkful-list-api.herokuapp.com/selvin-bookmarks-app';
-  const addBookmark = function(title, url, desc, rating, callback) {
+  const BASE_URL = 'https://thinkful-list-api.herokuapp.com/selvin/bookmarks';
+
+  const getBookmarks = function(callback) {
+    console.log ('getBookmarks ran');
+    $.getJSON(`${BASE_URL}`, callback);
+  };
+
+  const createBookmark = function(id,title, url, desc, rating, callback) {
     const newBookmark = {
+        id: id,
         title: title,
         url: url,
         desc: desc,
@@ -13,7 +20,7 @@ const api = (function() {
     const strJSON = JSON.stringify(newBookmark);
     // With ajax()
     $.ajax({
-      url: `${BASE_URL}/bookmarks`,
+      url: `${BASE_URL}`,
       method: 'POST',
       dataType: 'json',
       contentType: 'application/json',
@@ -21,12 +28,10 @@ const api = (function() {
       success: callback
     });
   };
-  const getBookmarks = function(callback) {
-    $.getJSON(`${BASE_URL}/bookmarks`, callback);
-  };
+
   const updateBookmark = function(id, updateData, callback) {
     $.ajax({
-      url: `${BASE_URL}/bookmarks/${id}`,
+      url: `${BASE_URL}/${id}`,
       method: 'PATCH',
       dataType: 'json',
       contentType: 'application/json',
@@ -34,9 +39,10 @@ const api = (function() {
       success: callback
     });
   };
-  return {
-    addBookmark,
+
+   return {
     getBookmarks,
+    createBookmark,  
     updateBookmark,
   };
 }());

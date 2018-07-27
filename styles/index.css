@@ -1,9 +1,142 @@
-header { 
-  padding: 10px 20px;
+* {
+  box-sizing: border-box;
 }
+
+/* Document level adjustments */
+html {
+  font-size: 18px 'Roboto', helvetica, sans-serif;
+}
+@media (max-width: 900px) {
+  html { font-size: 15px; }
+}
+@media (max-width: 400px) {
+  html { font-size: 13px; }
+}
+
+/* Modules will scale with document */
+.header {
+  font-size: 1.5rem;
+}
+.footer {
+  font-size: 0.75rem;
+}
+.sidebar {
+  font-size: 0.85rem;
+}
+
+/* Type will scale with modules */
 h1 {
-  color:blue;
+  font-size: 2.2em;
+  color:#000;
+  text-align:center;
 }
-main {
-  padding: 30px 20px;
+h2 {
+  font-size: 2em;
 }
+h3 {
+  font-size: 1.5em;
+}
+body {
+  padding: 1rem 1.8rem;
+  background-color:#fff;
+  color: #000;
+}
+li {
+  list-style-type: none;
+  border: 1px black solid;
+  padding-left:20px;
+  margin-bottom: 20px;
+}
+.logo {
+  width:400px;
+  margin:35px auto;
+  text-align:center;
+}
+.logo img {
+  height:35px;
+
+}
+
+.signup-form {
+  padding: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
+  border: none;
+  border-radius:3px;
+  width:400px;
+  background:#fff;
+}
+.signup-form fieldset {
+  padding: 0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  border: none;
+}
+
+.signup-form legend {
+  font-size: 1.2rem;
+  padding: 0;
+}
+
+.signup-form label {
+  display: block;
+  margin: 1rem 0;
+  font-weight:600;
+}
+
+.signup-form input {
+  display: block;
+  background:#fcfcfc;
+  margin-top: .35rem;
+  width:320px;
+  padding: 15px;
+  border:2px solid #ccc;
+  font-size:1.2em;
+  font-weight:bold;
+}
+
+.signup-form input::placeholder{ /* Modern browsers */
+  color: gray;
+}
+
+.signup-form input:-ms-input-placeholder { /* IE 10+ */
+  color: gray;
+}
+
+.signup-form button {
+  display: block;
+  height:55px;
+  width:320px;
+  padding: 15px;
+  border:2px solid #65c470;
+  border-radius:3px;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  color:#fff;
+  background: #65c470;
+  font-size: 1.4em;
+  font-weight:bold;
+  transition-property: color, background;
+  transition-duration: 0.35s;
+  transition-timing-function: ease-in-out;
+  
+}
+
+.signup-form button:hover,
+.signup-form button:active,
+.signup-form button:focus {
+  color: #fff;
+  background: #408111;
+  border:2px solid #408111;
+}
+.login-link, .login-link a {
+width:400px;
+text-align:center;
+margin-left: auto;
+margin-right:auto;
+color:#fff;
+font-weight:bold;
+}
+

@@ -2,11 +2,11 @@
 /* global cuid */
 
 const bookmark = (function(){
-  const validateName = function(name) {
-    if (!name) throw new TypeError('Name must not be blank');
+  const validateTitle = function(title) {
+    if (!title) throw new TypeError('Bookmark title must not be blank');
   };
 
-  const create = function(name) {
+  const addBookmark = function(name) {
     return {
       id: cuid(),
       title,
@@ -17,8 +17,8 @@ const bookmark = (function(){
   };
 
   return {
-    validateName,
-    create,
+    validateTitle,
+    addBookmark,
   };
   
 }());
