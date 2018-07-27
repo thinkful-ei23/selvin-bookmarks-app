@@ -4,14 +4,94 @@
 const bookmarkList = ( function(){
 
   function formatBookmark(bookmark) {
-      console.log('formatBookmark ran');
-      return `
-        <li class="bookmark-entry">
-          <div class="bookmark-item">
-            <p class="bookmark-title">${bookmark.title}</p>
-            <p class="${bookmark.minimum}"><img src="${bookmark.minimum}.png" alt=""></p>
-          </div>
-        </li>`
+    console.log('formatBookmark ran');
+    const rating = bookmark.rating;
+    const bookmarkRating = getBookmarkRating(rating);
+  
+    return `
+      <li class="bookmark-entry">
+        <div class="bookmark-item">
+          <p class="bookmark-title">${bookmark.title}</p>
+          <p class="bookmark-rating-class">${bookmarkRating}</p>
+        </div>
+      </li>`
+  }
+  
+  function getBookmarkRating(rating){
+    let bookmarkRating = '';
+    switch(rating) {
+      case 0:
+      bookmarkRating = `
+      <span class="wheart"></span>
+      <span class="wheart"></span>
+      <span class="wheart"></span>
+      <span class="wheart"></span>
+      <span class="wheart"></span>`;
+        break;
+      case 1:
+        bookmarkRating = `
+          <span class="bheart"></span>
+          <span class="wheart"></span>
+          <span class="wheart"></span>
+          <span class="wheart"></span>
+          <span class="wheart"></span>`;
+        break;
+      case 2:
+      bookmarkRating = `
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>`;
+      break;
+      case 3:
+      bookmarkRating = `
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>`;
+      break;
+      case 4:
+      bookmarkRating = `
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="wheart"></span>`;
+      break;
+      case 5:
+      bookmarkRating = `
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>
+        <span class="bheart"></span>`;
+      break;
+      default:        
+      bookmarkRating = `
+        <span class="wheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>
+        <span class="wheart"></span>`;
+    }
+    return bookmarkRating;
+  }
+
+  function loadFilter() {
+    $('.filter-bookmark').html(getFilterOptions);
+  } 
+  
+  function getFilterOptions(){
+    return `
+    <option value="5" class="val5">${getBookmarkRating(5)}</option>
+    <option value="4" class="val4">${getBookmarkRating(4)}</option>
+    <option value="3" class="val3">${getBookmarkRating(3)}</option>
+    <option value="2" class="val3">${getBookmarkRating(2)}</option>
+    <option value="1" class="val3">${getBookmarkRating(1)}</option>
+    <option value="0" class="val3">${getBookmarkRating(0)}</option>`;
+
   }
 
   function generateBookmarkString(bookmarkList) {
@@ -110,6 +190,7 @@ const bookmarkList = ( function(){
     handleRatingClicked();
     handleBookmarkTitleClicked();
     handleDeleteBookmarkClicked();
+
    // handleEditBookmarkSubmit();
   }
 
@@ -117,5 +198,6 @@ const bookmarkList = ( function(){
   return {
     render: render,
     bindEventListeners: bindEventListeners,
+    loadFilter: loadFilter,
   };
 }());

@@ -14,10 +14,31 @@
     <h1>My Bookmarks</h1>
     <form id="bookmark-options">
       <button type="button" class="add-bookmark">ADD BOOKMARK</button>
-      <button type="button" class="rate-bookmark">Minimum Rating</button>
+      <select name="rate-bookmark" class="filter-bookmark" placeholder="Minimum Rating">
+      </select>
     </form>
   </header>
   <main role=main>
+    <section class="add-bookmark">
+      <h2>Create a Bookmark</h2>
+      <form id="create-bookmark">
+        <div>
+          <label for="bookmark-title">Title:</label>   
+          <input type="text" name="bookmark-title" class="bookmark-title" placeholder=">e.g. Cat Videos...">
+        </div>
+        <div>
+          <label for="bookmark-url">URL:</label>         
+          <input type="text" name="bookmark-url" class="bookmark-url" placeholder=">Enter webpage URL"> 
+        </div>
+        <div>
+          <label for="bookmark-desc">Description:</label>         
+          <input type="textarea" name="bookmark-desc" class="bookmark-desc" placeholder=">Enter description.">
+          <span class="minRating"></span>
+          <button type="button" class="add-bookmark">ADD</button>
+          <button type="button" class="cancel-bookmark">CANCEL</button>  
+        </div>
+      </form>      
+    </section>
     <ul class="bookmark-list">
     </ul>    
   </main>
