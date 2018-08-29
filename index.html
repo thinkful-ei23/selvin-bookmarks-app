@@ -10,32 +10,36 @@
   <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
-  <header role="banner">
+  <header role="banner"  class = "cloud">
     <h1>
       My Bookmarks
     </h1>
-    <form id="bookmark-options">
+    <span class='shadow'></span>
+    <form  action="#" id="bookmark-options">
       <button type="button" name="add-bookmark" class="add-bookmark">
         ADD BOOKMARK
       </button>
-      <select id="filter-bookmark" name="filter-bookmark" class="filter-bookmark" placeholder="Minimum Rating">
-        <option value=0 class="valx">no filter</option>
-        <option value=5 class="val5">5 stars</option>
-        <option value=4 class="val4">4 stars</option>
-        <option value=3 class="val3">3 stars</option>
-        <option value=2 class="val2">2 stars</option>
-        <option value=1 class="val1">1 star</option>
-        <option value=0 class="val3">0 stars</option>
+
+      <select id="filter-bookmark" name="filter-bookmark" class="filter-bookmark">
+        <option value=5 class="val5">5 hearts</option>
+        <option value=4 class="val4">4+ hearts</option>
+        <option value=3 class="val3">3+ hearts</option>
+        <option value=2 class="val2">2+ hearts</option>
+        <option selected value=1 class="val1">show all</option>
       </select>
     </form>
   </header>
-  <main role=main>
-    <section id="bm-details">
+  <main role="main" aria-live="polite">
+    <section role="region" id="add-bm-panel">
+      <div>
+        <form action="#" id="create-bm"></form>
+      </div>    
     </section>
-    <section id="add-bm">     
+    <section role="region" id="bm-detail-panel">
     </section>
-    <ul class="bookmark-list">
-    </ul>    
+    <section role="region">
+        <ul class="bm-list"></ul>     
+    </section>
   </main>
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/cuid/1.3.8/browser-cuid.min.js"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>

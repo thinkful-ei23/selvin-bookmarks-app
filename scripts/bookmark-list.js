@@ -1,267 +1,410 @@
 ' use strict';
 /* global $ store api */
-//eslint-disable-next-line no-unused-vars
 const bookmarkList = ( function(){
+  //EVENT handlers
 
-  function formatBookmark(bookmark) {
-    console.log('formatBookmark ran');
-   // console.log(`bookmark: ${bookmark}`);
-    const rating = bookmark.rating;
-    const bookmarkRating = getBookmarkRating(rating);
-    //console.log(`bookmarkRating: ${bookmarkRating}`);
-    return `
-      <li class="bookmark-entry"  data-item-id="${bookmark.id}">
-        <div class="bookmark-item">
-          <p class="bookmark-title">${bookmark.title}</p>
-          <p class="bookmark-rating-class">${bookmarkRating}</p>
-        </div>
-      </li>`
-  }
-  
-  function getBookmarkRating(rating){
-    // returns 5 hearts combo of black/white
-   // console.log(`getBookmarkRating ran`);
-   // console.log(`rating: ${rating}`);
-    let bookmarkRating = '';
-    switch(rating) {
-      case 0:
-      bookmarkRating = `
-      <span class="wheart"></span>
-      <span class="wheart"></span>
-      <span class="wheart"></span>
-      <span class="wheart"></span>
-      <span class="wheart"></span>`;
-        break;
-      case 1:
-        bookmarkRating = `
-          <span class="bheart"></span>
-          <span class="wheart"></span>
-          <span class="wheart"></span>
-          <span class="wheart"></span>
-          <span class="wheart"></span>`;
-        break;
-      case 2:
-      bookmarkRating = `
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>`;
-      break;
-      case 3:
-      bookmarkRating = `
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>`;
-      break;
-      case 4:
-      bookmarkRating = `
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="wheart"></span>`;
-      break;
-      case 5:
-      bookmarkRating = `
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>
-        <span class="bheart"></span>`;
-      break;
-      default:        
-      bookmarkRating = `
-        <span class="wheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>
-        <span class="wheart"></span>`;
-    }
-    //console.log(`prior to return - bookmarkRating: ${bookmarkRating}`);
-    return bookmarkRating;
-  }
-
-  function generateBookmarkString(bookmarkList) {
-    const bookmarks = bookmarkList.map((bookmark) => formatBookmark(bookmark));
-    return bookmarks.join('');
-  }
-
-  function handleRatingClicked() {
-     $('#bookmark-options').on('click', '.rate-bookmark', event => {
-      console.log('handleRating ran');
-      const id = getbookmarkIdFromElement(event.currentTarget);
-       store.setRating(id);
-       render();
-     });
-   }
-   
-   function handleAddBookmarkClicked() {
+//ADD functions
+  function handleAddBmButtonClick() {
     $('.add-bookmark').on('click', event => {
-     console.log('handleAddBookmarkClicked ran')  
+     console.log('handleAddBmButtonClick ran')  
      store.adding = true;
+     $('#create-bm').addClass('openForm');
      render();
     });
   }
-
-  
-  function handleCancelBookmarkClicked() {
-
-    $('.add-bookmark').on('click', '.cancel-bookmark', event => {
-      console.log('handleCancelBookmarkClicked ran');
-      store.adding = false;
-      render();
-    });
- }
- 
-  // this is fired once the "ADD" button is clicked from create panel
-  function handleNewBookmarkSubmit() {
-
-    $('#create-bookmark').submit(function (event) {
+  function handleAddBmPanelSubmit() {
+    //console.log('handleAddBmPanelSubmit listener'); 
+    $('#create-bm').on('click', '.add-bookmark', event => {  
+     // console.log(`$('#create-bm').on('submit', event =>`);           
+      event.stopPropagation();    
       event.preventDefault();
-      console.log('handleNewBookmarkSubmit');
-      const newBookmarkTitle = $('.bookmark-title').val();
-      const newBookmarkURL = $('.bookmark-url').val();
-      const newBookmarkDesc = $('.bookmark-desc').val();
-      const newBookmarkRating = $('.bookmark-rating').val();
-     // console.log(`newBookmarkTitle: ${newBookmarkTitle}`);
-     // console.log(`newBookmarkURL: ${newBookmarkURL}`);
-     //console.log(`newBookmarkDesc: ${newBookmarkDesc}`);
-      //console.log(`newBookmarkRating: ${newBookmarkRating}`);
-      $('.bookmark-title').val('');
-      $('.bookmark-url').val('');
-      $('.bookmark-desc').val('');
-      $('.bookmark-rating').val('');
-      $('#create-bookmark').addClass('hidden');
-      api.createBookmark(newBookmarkTitle, newBookmarkURL, newBookmarkDesc, newBookmarkRating, (newBookmark) => {
-        store.addBookmark(newBookmark);
-        render();
+      const newBmTitle = $('.title').val();
+      const newBmURL = $('.url').val();
+      const newBmDesc = $('.desc').val();
+      const newBmRating = $('.rating').val();
+      api.createBookmark(newBmTitle, newBmURL, newBmDesc, newBmRating, (newEntry) => {
+        store.addBookmark(newEntry);
+      
+      store.adding = false;
+      $('#create-bm').removeClass('openForm');
+
+      render();
       });
+    });
+  }
+  
+  function handleBmPanelCloseClick() {
+    $('#bm-detail-panel').on('click', '.bm-panel-close', event => {
+      console.log('handleBmPanelCloseClick ran')
+      store.expanded = null;
+      $('#bm-detail-panel').removeClass('openForm');
+      render();
+    });    
+  }
+//DISPLAY functions
+  function handleBmListClick() {
+    $('.bm-list').on('click', '.bm-entry', event => {
+      console.log('handleBmListClick ran')
+        const bmID = $(event.currentTarget).data('item-id');
+        //console.log(bmID);
+        store.expanded = bmID;
+        //console.log(store);
+        //$('#bm-detail-panel').html(getDetailPanelData(store.findById(bmID)));
+      render();
+    });
+
+    $('.bm-list').on('click', '.bm-delete', event => {
+      event.stopPropagation(); 
+      console.log('handleBmDeleteClick ran');
+      // get the index of the bookmark in store.bookmarks
+      //console.log('event.currentTarget: ' + event.currentTarget);
+      const bmID = $(event.currentTarget).closest('li').data('item-id');
+      //console.log('bmID: ' + bmID);
+      store.findAndDelete(bmID);
+      api.deleteBookmark(bmID); 
       render();
     });
   }
- 
-  function handleBookmarkClicked() {
-    $('.bookmark-list').on('click', '.bookmark-entry', event => {
-        const bmID = $(event.currentTarget).data('item-id');
-        //const bmTitle = $(event.currentTarget).val();
-        $('#bm-details').removeClass('hidden');
-        //$('#bm-details h2').val($(event.currentTarget))
-        console.log($(event.currentTarget));
-        console.log(bmID);
-        //console.log(bmTitle);
-      //const id = getbookmarkIdFromElement(event.currentTarget);
-    });
-  }
 
-  function handleBookmarkTitleClicked() {
-    $('.bookmark-list').on('click', '.bookmark-title', event => {
-      const id = editBookmarkTitle(event.currentTarget);
+//UPDATE functions
+  function handleBmTitleClick() {
+    $('.bm-list').on('dblclick', '.title', event => {
+      const id = editBookmark(event.currentTarget);
       store.findAndToggleChecked(id);
       render();
     });
   }
 
-  function editBookmarkTitle(title) {
-    console.log(`editBookmarkTitle ran`);
-  }
-
-  function handleDeleteBookmarkClicked() {
-    $('.bookmark-list').on('click', '.bookmark-delete', event => {
-      // get the index of the bookmark in store.bookmarks
-      const id = getbookmarkIdFromElement(event.currentTarget);
-      // delete the bookmark
-      store.findAndDelete(id);
-      // render the updated shopping list
+//CANCEL function
+  function handleBmCancelClick() {
+  $('#create-bm').on('click', '.cancel-bookmark', event => {
+      console.log('handleBmCancelClick ran');
+      store.adding = false;
+      $('#create-bm').removeClass('openForm');
       render();
     });
+ }
+
+ //DELETE function
+ function handleBmDeleteClick() {
+  $('#bm-detail-panel').on('click', '.remove', event => {
+    console.log('handleBmDeleteClick ran');
+    // get the index of the bookmark in store.bookmarks
+    //console.log('event.currentTarget: ' + event.currentTarget);
+    const id = $('.bm-panel-entry').data('item-id');
+    //console.log('id: ' + id);
+    store.findAndDelete(id);
+    api.deleteBookmark(id); 
+    store.expanded = null;
+    $('#bm-detail-panel').removeClass('openForm');
+    render();
+  });
+}
+
+//FILTER functions
+
+function handleFilterClicked() {
+  $('#filter-bookmark').change(function(){
+   // console.log('Filter rating: ' + $(this).val());  
+   // console.log('handleFilterClicked ran');
+    store.minimum = ($(this).val());
+   // console.log('store.minimum: ' + store.minimum); 
+    render();
+  });
+}
+function handleBmRatingClick() {
+  $('.bm-list').on('click', '.one', event => {
+    console.log('handleRating ran');
+    event.stopPropagation();   
+    //console.log('event.currentTarget: ' + event.currentTarget);
+    const bmID = $(event.currentTarget).closest('li').data('item-id');
+    //console.log('bmID: ' + bmID);
+    store.findAndUpdateRating(bmID, 1);
+    render();
+  });
+  $('.bm-list').on('click', '.two', event => {
+    event.stopPropagation();    
+    const bmID = $(event.currentTarget).closest('li').data('item-id');
+    store.findAndUpdateRating(bmID, 2);
+    render();
+  });
+  $('.bm-list').on('click', '.three', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('li').data('item-id');
+    store.findAndUpdateRating(bmID, 3);
+    render();
+  });
+  $('.bm-list').on('click', '.four', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('li').data('item-id');
+    store.findAndUpdateRating(bmID, 4);
+    render();
+  });
+  $('.bm-list').on('click', '.five', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('li').data('item-id');
+    store.findAndUpdateRating(bmID, 5);
+    render();
+  });
+}
+function handlePanelRatingClick() {
+  $('#bm-detail-panel').on('click', '.one', event => {
+    console.log('handleRating ran');
+    event.stopPropagation();   
+    console.log('event.currentTarget: ' + event.currentTarget);
+    const bmID = $(event.currentTarget).closest('div').data('item-id');
+    console.log('bmID: ' + bmID);
+    store.findAndUpdateRating(bmID, 1);
+    render();
+  });
+  $('#bm-detail-panel').on('click', '.two', event => {
+    event.stopPropagation();    
+    const bmID = $(event.currentTarget).closest('div').data('item-id');
+    store.findAndUpdateRating(bmID, 2);
+    render();
+  });
+  $('#bm-detail-panel').on('click', '.three', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('div').data('item-id');
+    store.findAndUpdateRating(bmID, 3);
+    render();
+  });
+  $('#bm-detail-panel').on('click', '.four', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('div').data('item-id');
+    store.findAndUpdateRating(bmID, 4);
+    render();
+  });
+  $('#bm-detail-panel').on('click', '.five', event => {
+    event.stopPropagation();   
+    const bmID = $(event.currentTarget).closest('div').data('item-id');
+    store.findAndUpdateRating(bmID, 5);
+    render();
+  });
+}
+
+// ERROR HANDLING functions
+//Utility functions
+
+function handleErrorMessage (errmsg) {
+  if (errmsg && errmsg.length > 0) {
+    if ($('input.title').val() === '') {
+      $('input.title').css({'color':'red', 'font-weight':'bold'});
+      $('input.title').attr('placeholder', 'Title is required')
+    } else {
+      if ($('input.url').val() === '') {
+        $('input.url').css({'color':'red', 'font-weight':'bold'});
+        $('input.url').attr('placeholder', 'URL is required')
+      } else {
+        $('.errmsg').html(`<p class="errmsg">${errmsg}</p>`);
+      }
+    }
+    //console.log("$('input.title').val(): " + $('input.title').val());
+  } else {
+    $('.errmsg').html('');
   }
+}
+
+  function formatBmListEntry(bookmark) {
+    console.log('formatBmListEntry ran');
+   // console.log(`bookmark: ${bookmark}`);
+    const rating = bookmark.rating;
+    const bmRating = getBmRating(rating);
+    //console.log(`bmRating: ${bmRating}`);
+    if (store.expanded == bookmark.id) {
+      return `
+      <li class="bm-entry border" tabindex="0" data-item-id="${bookmark.id}">
+        <div class="bm-item">
+          <div title="delete bookmark" class="bm-delete" tabindex="0">x</div>
+          <p class="title" tabindex="0">${bookmark.title}</p>
+          <p class="bm-rating-class" data-item-id="${bookmark.id}">${bmRating}</p>
+        </div>
+      </li>`
+
+    } else {
+      return `
+      <li class="bm-entry" tabindex="0" data-item-id="${bookmark.id}">
+        <div class="bm-item">
+          <div title="delete bookmark" class="bm-delete" tabindex="0">x</div>
+          <p class="title" tabindex="0">${bookmark.title}</p>
+          <p class="bm-rating-class" data-item-id="${bookmark.id}">${bmRating}</p>
+        </div>
+      </li>`
+
+    }
+  }
+ 
+  function getDetailPanelData(bookmark) {
+    console.log('getDetailPanelData ran');
+   // console.log(`bookmark: ${bookmark}`);
+    //console.log(`bmRating: ${bmRating}`);
+    return `
+      <div  class="show-detail openForm dblBorder">
+        <header>
+          <button class="remove">Remove</button>        
+          <h2 class="bm-panel-title">${bookmark.title}</h2>
+        </header>
+        <p class="bm-panel-entry" data-item-id="${bookmark.id}">${bookmark.desc}</p>
+        <div class="detail-buttons">
+          <button class="visit"><a href="${bookmark.url}"  target="_blank">Visit Site</a></button>
+          <button class="bm-panel-close" tabindex="0" >close</button>
+        <div class="rating" data-item-id="${bookmark.id}">${getBmRating(bookmark.rating)}</div>
+      </div>`;
+  }
+//UPDATE functions
+
+function editBookmarK(title) {
+  console.log(`editBookmarK ran`);
+  const updateData = {
+    title: title,
+    url: url,
+    desc: desc,
+    rating: rating
+  };
+}
+
+
+ 
+   //RENDERING 
 
   function render() {
-    console.log('`render` ran');
-    //console.log(`store.bookmarks: ${store.bookmarks}`);
-    //console.log(`store.minimum: ${store.minimum}`);
-    // Filter bookmark list if store prop `rating > 0` 
-    let bookmarks = store.bookmarks;
-    if (store.minimum !== 0) {
-      bookmarks.filter(bookmark => bookmark.rating >= store.minimum);
+    // console.log('render ran');
+    // console.log('store.bookmarks: ' + store.bookmarks);
+    // console.log('store.minimum: ' + store.minimum);
+    // console.log('store.adding: ' + store.adding);
+    // build ADD Panel first if needed
+    if (store.expanded!== null) {
+      //console.log();
+      $('#bm-detail-panel').html(getDetailPanelData(store.findById(store.expanded)));
+    } else {
+      $('#bm-detail-panel').html('');
     }
-    //console.log(`bookmarks: ${bookmarks}`);
 
-    const bookmarkListString = generateBookmarkString(bookmarks);
-
-    if (store.expanded === true) {
-      const bookmarkExpandedString = `
-      <div  class="show-detail">
-        <header>
-          <h2 class="title"></h2>
-        </header>
-        <p class="bookmark-detail"></p>
-        <div class="detail-buttons">
-          <button class="visit">Visit Site</button>
-          <button class="remove">Remove</button>
-        <div class="rating">
-        </div>
-      </div>`;
-      $('#bm-details').html(bookmarkExpandedString);
-    }
-  
     if (store.adding === true) {
-      const bookmarkAddingString = `
-      <div>
-        <form id="create-bookmark">
-          <header>
+      const newBmCreatePanelString = `
+          <header
             <h2>Create a Bookmark</h2>
           </header>  
           <fieldset>
-            <div>
-              <label for="bookmark-title">Title:</label>   
-              <input type="text" name="bookmark-title" class="bookmark-title" placeholder=">e.g. Cat Videos...">
-            </div>
-            <div>
-              <label for="bookmark-url">URL:</label>         
-              <input type="text" name="bookmark-url" class="bookmark-url" placeholder=">Enter webpage URL"> 
-            </div>
-            <div>
-              <label for="bookmark-desc">Description:</label>         
-              <input type="textarea" name="bookmark-desc" class="bookmark-desc" placeholder=">Enter description.">
-              <label for="bookmark-rating">Rating</label> 
-              <select id="bookmark-rating" name="bookmark-rating" class="bookmark-rating">
-                <option value=0 class="valx">no filter</option>
-                <option value=5 class="val5">5 stars</option>
-                <option value=4 class="val4">4 stars</option>
-                <option value=3 class="val3">3 stars</option>
-                <option value=2 class="val2">2 stars</option>
-                <option value=1 class="val1">1 star</option>
-                <option value=0 class="val3">0 stars</option>
-              </select>
-            </div>
             <div>  
-              <button type="submit" class="add-bookmark">ADD</button>
-              <button type="reset" class="cancel-bookmark">CANCEL</button>  
+              <input type="text" name="title" class="title" placeholder="Enter Title e.g. Cat Videos..."/>
             </div>
-          </fieldset>
-        </form> 
-      </div>`;
+            <div>       
+              <input type="text" name="url" class="url" placeholder="Enter webpage URL"/> 
+            </div>
+            <div>     
+              <textarea name="desc" class="desc" placeholder="Enter description."></textarea>
+              <div><label for="rating">Rating</label> 
+              <select id="rating" name="rating" class="rating">
+                <option value=5 class="val5">5 hearts</option>
+                <option value=4 class="val4">4 hearts</option>
+                <option value=3 class="val3">3 hearts</option>
+                <option value=2 class="val2">2 hearts</option>
+                <option value=1 class="val1">1 heart</option>
+              </select>
+              </div>
+            </div>
+            <div> 
+              <button type="reset" class="cancel-bookmark">CANCEL</button>  
+              <button type="submit" class="add-bookmark">ADD</button> 
+            </div>
+          </fieldset>`;   
 
-      $('#add-bm').html(bookmarkAddingString);
+      $('#create-bm').html(newBmCreatePanelString).addClass('openForm');
+    } else {
+      $('#create-bm').html('');
     }
 
+    //Filter bookmark list if store filter`rating > 0` 
+    //console.log('store.bookmarks.length = ' + store.bookmarks.length);
+
+    let bookmarks = store.bookmarks.filter(bookmark => bookmark.rating >= store.minimum);
+
+    //console.log('after filter bookmarks.length = ' + bookmarks.length);
+    //console.log(`bookmarks: ${bookmarks}`);
+    let bmListString = 'No bookmarks to display';
+    if (bookmarks.length > 0) {
+      bmListString = buildBmListString(bookmarks);
+     // console.log("built the list string for all the bookmarks: " + typeof(bookmarks) + " | " + bmListString);
+    }
     //insert the HTML into the DOM
-    $('.bookmark-list').html(bookmarkListString);
+    $('.bm-list').html(bmListString);
    }
+   function buildBmListString(bookmarks) {
+    const BmListString = bookmarks.map((bookmark) => formatBmListEntry(bookmark));
+    return BmListString.join('');
+  }
+  function getBmRating(rating){
+    // returns 5 hearts combo of black/white
+    // console.log(`getBmRating ran`);
+    // console.log(`rating: ${rating}`);
+    let bmRating = '';
+    switch(rating) {
+      case 1:
+        bmRating = `
+          <span class="one bheart"></span>
+          <span class="two wheart"></span>
+          <span class="three wheart"></span>
+          <span class="four wheart"></span>
+          <span class="five wheart"></span>`;
+        break;
+      case 2:
+      bmRating = `
+        <span class="one bheart"></span>
+        <span class="two bheart"></span>
+        <span class="three wheart"></span>
+        <span class="four wheart"></span>
+        <span class="five heart"></span>`;
+      break;
+      case 3:
+      bmRating = `
+        <span class="one bheart"></span>
+        <span class="two bheart"></span>
+        <span class="three bheart"></span>
+        <span class="four wheart"></span>
+        <span class="five wheart"></span>`;
+      break;
+      case 4:
+      bmRating = `
+        <span class="one bheart"></span>
+        <span class="two bheart"></span>
+        <span class="three bheart"></span>
+        <span class="four bheart"></span>
+        <span class="five wheart"></span>`;
+      break;
+      case 5:
+      bmRating = `
+        <span class="one bheart"></span>
+        <span class="two bheart"></span>
+        <span class="three bheart"></span>
+        <span class="four bheart"></span>
+        <span class="five bheart"></span>`;
+      break;
+      default:        
+      bmRating = `
+        <span class="one bheart"></span>
+        <span class="two wheart"></span>
+        <span class="three wheart"></span>
+        <span class="four wheart"></span>
+        <span class="five wheart"></span>`;
+    }
+    //console.log(`prior to return - bmRating: ${bmRating}`);
+    return bmRating;
+  }
+
 
   function bindEventListeners() {
-    handleAddBookmarkClicked();
-    handleNewBookmarkSubmit();
-    handleRatingClicked();
-    //handleBookmarkTitleClicked();
-    handleDeleteBookmarkClicked();
-    handleCancelBookmarkClicked();
-    handleBookmarkClicked();
-
+    handleAddBmButtonClick();
+    handleAddBmPanelSubmit();
+    handleBmPanelCloseClick();
+    handleFilterClicked();
+    handleErrorMessage();
+    //handleBmTitleClick();
+    handleBmDeleteClick();
+    handleBmCancelClick();
+    handleBmListClick();
+    handleBmRatingClick();
+    handlePanelRatingClick();
    // handleEditBookmarkSubmit();
   }
 
@@ -269,5 +412,6 @@ const bookmarkList = ( function(){
   return {
     render: render,
     bindEventListeners: bindEventListeners,
+    handleErrorMessage,
   };
 }());
